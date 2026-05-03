@@ -44,4 +44,39 @@ See [schema.sql](schema.sql). Key columns of `iap_service`:
 3. Server decodes the JWS, checks `productId`, ensures the
    `transactionId` is unseen, then credits points inside one DB transaction.
 4. Server returns the new balance to the app.
-# sever_chat
+
+## Deploy on Render (No custom domain needed)
+
+Use Render's free subdomain (e.g. `https://sever-chat.onrender.com`) and set
+`POINTS_API_BASE_URL` in the iOS app to that URL.
+
+### Option A: Blueprint (recommended)
+
+1. Keep `render.yaml` at project root.
+2. In Render, create a new Blueprint service from this repository.
+3. Confirm service uses `rootDir: server`, `buildCommand: npm install`,
+    `startCommand: npm start`.
+4. Set required env vars in Render dashboard:
+    `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`.
+5. Deploy.
+
+### Option B: Manual web service
+
+1. New Web Service in Render.
+2. Root Directory: `server`
+3. Build Command: `npm install`
+4. Start Command: `npm start`
+5. Add same env vars as above.
+
+### Post-deploy checks
+
+```bash
+curl -sS https://YOUR-SERVICE.onrender.com/health
+curl -sS https://YOUR-SERVICE.onrender.com/ready
+curl -sS -X POST https://YOUR-SERVICE.onrender.com/wallet \
+   -H 'Content-Type: application/json' \
+   -d '{"device_id":"render-smoke-test-1"}'
+curl -sS -X POST https://YOUR-SERVICE.onrender.com/spend \
+   -H 'Content-Type: application/json' \
+   -d '{"device_id":"render-smoke-test-1"}'
+```

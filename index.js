@@ -1,6 +1,7 @@
 'use strict';
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const pool = require('./db');
@@ -92,7 +93,31 @@ async function applyTransaction({ userId, amount, type, productId = null, transa
 
 // ----- Routes ---------------------------------------------------------------
 
+app.get('/', (_req, res) => {
+    res.json({
+        service: 'aiimagechat-iap-server',
+        status: 'ok',
+        endpoints: [
+            'GET /health',
+            'GET /ready',
+            'POST /wallet',
+            'POST /spend',
+            'POST /iap/apple/verify',
+            'GET /transactions?device_id=...'
+        ]
+    });
+});
+
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+app.get('/ready', async (_req, res) => {
+    try {
+        await pool.query('SELECT 1');
+        res.json({ ok: true, db: 'up' });
+    } catch (err) {
+        res.status(503).json({ ok: false, db: 'down', error: err.message });
+    }
+});
 
 // Get or create the wallet for a device.
 //   POST /wallet  { device_id }
@@ -140,7 +165,7 @@ app.post('/iap/apple/verify', async (req, res) => {
 
         if (jws_transaction) {
             // The client sends base64-encoded jsonRepresentation from StoreKit 2.
-            // Try to decode it; if it fails, fall back to using bodyTxId directly.
+            // Try to decode it; if it fails, try JWS payload decode.
             try {
                 const decoded = Buffer.from(jws_transaction, 'base64').toString('utf8');
                 const payload = JSON.parse(decoded);
@@ -153,9 +178,7 @@ app.post('/iap/apple/verify', async (req, res) => {
                     resolvedProductId = payload.productId;
                     appleTxId         = String(payload.transactionId || payload.originalTransactionId || bodyTxId || '');
                 } catch {
-                    // Fallback: trust the body params directly.
-                    resolvedProductId = product_id;
-                    appleTxId         = String(bodyTxId || '');
+                    return res.status(400).json({ error: 'invalid jws_transaction payload' });
                 }
             }
         } else if (receipt_data) {
@@ -230,4 +253,5 @@ app.get('/transactions', async (req, res) => {
 const port = Number(process.env.PORT || 3000);
 app.listen(port, () => {
     console.log(`AIImageChat IAP server listening on :${port}`);
+    console.log(`NODE_ENV=${process.env.NODE_ENV || 'development'}`);
 });

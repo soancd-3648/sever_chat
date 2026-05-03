@@ -4,10 +4,15 @@
   "description": "IAP server-side validation + points wallet for AIImageChat",
   "main": "index.js",
   "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "init-db": "node initDb.js"
+    "init-db": "node initDb.js",
+    "check-health": "curl -sS ${BASE_URL:-http://127.0.0.1:3000}/health",
+    "check-ready": "curl -sS ${BASE_URL:-http://127.0.0.1:3000}/ready"
   },
   "dependencies": {
     "axios": "^1.7.7",
