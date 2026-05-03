@@ -1,0 +1,19 @@
+{
+  "name": "aiimagechat-iap-server",
+  "version": "1.0.0",
+  "description": "IAP server-side validation + points wallet for AIImageChat",
+  "main": "index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "init-db": "node initDb.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mysql2": "^3.11.3"
+  }
+}
