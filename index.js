@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 
-const DEFAULT_NEW_USER_POINTS = Number(process.env.DEFAULT_NEW_USER_POINTS || 200);
+const DEFAULT_NEW_USER_POINTS = Number(process.env.DEFAULT_NEW_USER_POINTS || 100);
 const POINTS_PER_REQUEST      = Number(process.env.POINTS_PER_REQUEST || 50);
 
 // Catalog of valid IAP product ids -> point amount.

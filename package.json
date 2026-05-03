@@ -11,6 +11,7 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "init-db": "node initDb.js",
+    "migrate-db": "node migrateDb.js",
     "check-health": "curl -sS ${BASE_URL:-http://127.0.0.1:3000}/health",
     "check-ready": "curl -sS ${BASE_URL:-http://127.0.0.1:3000}/ready"
   },

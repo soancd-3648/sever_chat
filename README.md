@@ -80,3 +80,11 @@ curl -sS -X POST https://YOUR-SERVICE.onrender.com/spend \
    -H 'Content-Type: application/json' \
    -d '{"device_id":"render-smoke-test-1"}'
 ```
+
+If you deployed from an older DB schema and get errors like
+`Unknown column 'balance_after'`, run this one-time migration:
+
+```bash
+cd server
+npm run migrate-db
+```

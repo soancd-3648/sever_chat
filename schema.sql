@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS users (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     device_id       VARCHAR(128) NOT NULL UNIQUE,
-    balance         INT NOT NULL DEFAULT 200,
+    balance         INT NOT NULL DEFAULT 100,
     created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
